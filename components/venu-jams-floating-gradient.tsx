@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import ReactPlayer from "react-player";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Play, Volume2, Pause } from "lucide-react";
 import Image from "next/image";
 import { Montserrat } from "next/font/google";
-import { TwitchService } from "../services/twitchService"; // Adjust the path as necessary
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -12,16 +12,10 @@ export function VenuJamsFloatingGradient() {
   const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [audioElement, setAudioElement] = useState<HTMLAudioElement | null>(
-    null
-  );
-
-  const twitchService = new TwitchService(
-    process.env.NEXT_PUBLIC_TWITCH_CLIENT_ID || "",
-    process.env.NEXT_PUBLIC_TWITCH_CLIENT_SECRET || ""
-  );
+  const [currentTime] = useState(0);
+  const [duration] = useState(0);
+  const [isMuted, setIsMuted] = useState(true); // New state for muting
+  const playerRef = useRef<ReactPlayer>(null);
 
   const handleMouseMove = useCallback((event: MouseEvent) => {
     const { clientX, clientY } = event;
@@ -41,57 +35,6 @@ export function VenuJamsFloatingGradient() {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [handleMouseMove]);
-
-  useEffect(() => {
-    const audio = new Audio();
-    console.log("Audio element created:", audio);
-    setAudioElement(audio);
-
-    audio.addEventListener("timeupdate", () => {
-      setCurrentTime(audio.currentTime);
-    });
-
-    audio.addEventListener("loadedmetadata", () => {
-      setDuration(audio.duration);
-    });
-
-    return () => {
-      audio.pause();
-      audio.src = "";
-    };
-  }, []);
-
-  const togglePlayPause = useCallback(async () => {
-    console.log("Toggling play/pause");
-    if (audioElement) {
-      if (isPlaying) {
-        audioElement.pause();
-      } else {
-        try {
-          const streamInfo = await twitchService.getStreamInfo("venujams");
-          if (streamInfo && streamInfo.type === "live") {
-            audioElement.src = streamInfo.thumbnail_url; // Set the audio source to the stream URL
-            await audioElement.play();
-          } else {
-            console.error("Stream is not live or not found.");
-          }
-        } catch (error) {
-          console.error("Error fetching stream info:", error);
-        }
-      }
-      setIsPlaying(!isPlaying);
-    }
-  }, [isPlaying, audioElement]);
-
-  const handleVolumeChange = useCallback(
-    (newVolume: number) => {
-      if (audioElement) {
-        audioElement.volume = newVolume;
-        setVolume(newVolume);
-      }
-    },
-    [audioElement]
-  );
 
   const tracks = [
     {
@@ -116,6 +59,16 @@ export function VenuJamsFloatingGradient() {
       image: "https://i1.sndcdn.com/artworks-uSus4Jxo8AcM-0-t500x500.jpg",
     },
   ];
+
+  const handlePlayPause = useCallback(() => {
+    setIsPlaying(!isPlaying);
+    setIsMuted(!isMuted);
+  }, [isPlaying, isMuted]);
+
+  const handleVolumeChange = useCallback((value: number) => {
+    setVolume(value);
+    // ReactPlayer handles volume through props, no need to access internal player
+  }, []);
 
   return (
     <div
@@ -184,7 +137,7 @@ export function VenuJamsFloatingGradient() {
                 </span>
               </div>
               <div className="flex items-center space-x-2">
-                <button onClick={togglePlayPause}>
+                <button onClick={handlePlayPause}>
                   {isPlaying ? (
                     <Pause size={20} className="text-white" />
                   ) : (
@@ -250,6 +203,28 @@ export function VenuJamsFloatingGradient() {
           animation: float 30s ease-in-out infinite;
         }
       `}</style>
+
+      {/* Hidden ReactPlayer */}
+      <div className="hidden">
+        <ReactPlayer
+          ref={playerRef}
+          url="https://www.twitch.tv/venujams"
+          playing={isPlaying}
+          muted={isMuted}
+          width="0"
+          height="0"
+          volume={1}
+          config={{
+            twitch: {
+              options: {
+                video: false,
+                // Audio only mode
+                playsinline: true,
+              },
+            },
+          }}
+        />
+      </div>
     </div>
   );
 }
