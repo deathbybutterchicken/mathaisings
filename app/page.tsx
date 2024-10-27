@@ -1,5 +1,5 @@
-import { VenuJamsFloatingGradient } from "@/components/venu-jams-floating-gradient"
+import { MathaiJamsFloatingGradient } from "@/components/mathai-jams-floating-gradient";
 
 export default function Page() {
-  return <VenuJamsFloatingGradient />
+  return <MathaiJamsFloatingGradient />;
 }

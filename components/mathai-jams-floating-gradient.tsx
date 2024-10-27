@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import ReactPlayer from "react-player";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Play, Volume2, Pause } from "lucide-react";
@@ -8,7 +9,7 @@ import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
-export function VenuJamsFloatingGradient() {
+export function MathaiJamsFloatingGradient() {
   const [gradientPosition, setGradientPosition] = useState({ x: 50, y: 50 });
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
@@ -72,21 +73,21 @@ export function VenuJamsFloatingGradient() {
 
   return (
     <div
-      className={`min-h-screen bg-black text-white p-6 flex flex-col ${montserrat.className} relative overflow-hidden`}
+      className={`min-h-screen bg-#FF9EAD text-white p-6 flex flex-col ${montserrat.className} relative overflow-hidden`}
     >
       {/* Floating gradient element */}
-      <div className="absolute w-96 h-96 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="absolute w-96 h-96 top-1/2 left-3/4 transform -translate-x-1/2 -translate-y-1/2">
         <div
           className="w-full h-full rounded-full opacity-70 animate-float transition-all duration-1000 ease-out"
           style={{
-            background: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, #E0EFED, #867CAD, #625B97, #3A0D4D)`,
+            background: `radial-gradient(circle at ${gradientPosition.x}% ${gradientPosition.y}%, #FFF8BB, #953C35, #625B97, #E56B6F)`,
             filter: "blur(40px)",
           }}
         ></div>
       </div>
 
       {/* Frosted glassmorphism layer */}
-      <div className="absolute inset-0 backdrop-filter backdrop-blur-sm bg-white bg-opacity-10 z-10"></div>
+      <div className="absolute inset-0 backdrop-filter backdrop-blur-sm bg-white bg-opacity-5 z-10"></div>
 
       {/* Frosted glass effect */}
       <div className="absolute inset-0 backdrop-filter backdrop-blur-sm bg-black bg-opacity-20"></div>
@@ -124,48 +125,48 @@ export function VenuJamsFloatingGradient() {
           <h1
             className={`${montserrat.className} text-9xl font-extrabold mb-4 tracking-wider text-white`}
           >
-            VENU JAMS
+            MATHAI SINGS
           </h1>
           <div className="border-t border-white border-opacity-20 pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-4">
-                <span className="text-xs text-white text-opacity-80">
+                <span className="text-xs text-black text-opacity-80">
                   NOW PLAYING:
                 </span>
-                <span className="text-sm font-medium text-white">
+                <span className="text-sm font-medium text-black">
                   Skrillex — Taka Taka
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <button onClick={handlePlayPause}>
                   {isPlaying ? (
-                    <Pause size={20} className="text-white" />
+                    <Pause size={20} className="text-black" />
                   ) : (
-                    <Play size={20} className="text-white" />
+                    <Play size={20} className="text-black" />
                   )}
                 </button>
-                <div className="w-32 h-1 bg-white bg-opacity-20 rounded-full">
+                <div className="w-32 h-1 bg-black bg-opacity-20 rounded-full">
                   <div
-                    className="h-full bg-white rounded-full"
+                    className="h-full bg-black rounded-full"
                     style={{
                       width: `${(currentTime / duration) * 100}%`,
                     }}
                   ></div>
                 </div>
-                <span className="text-xs text-white text-opacity-80">
+                <span className="text-xs text-black text-opacity-80">
                   {Math.floor(currentTime / 60)}:
                   {Math.floor(currentTime % 60)
                     .toString()
                     .padStart(2, "0")}
                 </span>
-                <span className="text-xs text-white text-opacity-80">
+                <span className="text-xs text-black text-opacity-80">
                   {Math.floor(duration / 60)}:
                   {Math.floor(duration % 60)
                     .toString()
                     .padStart(2, "0")}
                 </span>
                 <div className="flex items-center space-x-1">
-                  <Volume2 size={20} className="text-white" />
+                  <Volume2 size={20} className="text-black" />
                   <input
                     type="range"
                     min="0"
@@ -208,7 +209,7 @@ export function VenuJamsFloatingGradient() {
       <div className="hidden">
         <ReactPlayer
           ref={playerRef}
-          url="https://www.twitch.tv/venujams"
+          url="https://www.twitch.tv/mathaisings"
           playing={isPlaying}
           muted={isMuted}
           width="0"
